@@ -55,7 +55,7 @@ sphere::sphere(string filename){
 
 
 
-void sphere::aerodynamics_3_9(double* y0,double* ans){
+void sphere::aerodynamics(double* y0,double* ans){
     // get inputs
     double u = y0[0];
     double v = y0[1];
@@ -136,7 +136,7 @@ void sphere::get_state_array_delta(double* y0,double* ans){
     
     
     // get psudo aerodynamic forces for current states
-    this->aerodynamics_3_9(y0,FM);
+    this->aerodynamics(y0,FM);
     Fx = FM[0];
     Fy = FM[1];
     Fz = FM[2];
@@ -180,7 +180,7 @@ void sphere::get_state_array_delta(double* y0,double* ans){
     
 }
 
-void sphere::exercise_3_9(){
+void sphere::run_simulation(){
     double t=0;
     int i=0;
     ifstream f("arrow_out.txt");

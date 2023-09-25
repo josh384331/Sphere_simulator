@@ -6,7 +6,7 @@ int main(){
     auto start_time = chrono::high_resolution_clock::now();
     auto end_time = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end_time - start_time;
-    arrow myArrow("arrow.json");
+    arrow myArrow("sphere.json");
     start_time = chrono::high_resolution_clock::now();
     myArrow.exercise_3_9();
     end_time = chrono::high_resolution_clock::now();

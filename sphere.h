@@ -1,13 +1,13 @@
 #ifndef SPHERE_H
 #define SPHERE_H
-#include "hurwitz_helper.h"
+#include "helper.h"
 
 
 class sphere{
 public:
     sphere(string filename);
     ~sphere(){};
-    void exercise_3_9();
+    void run_simulation();
 
 private:
     double m_state[13];
@@ -16,7 +16,7 @@ private:
     int m_counter=0;
 
     void get_state_array_delta(double* y0,double* ans);
-    void aerodynamics_3_9(double* y0, double* ans);
+    void aerodynamics(double* y0, double* ans);
     void rk4();
     
 
