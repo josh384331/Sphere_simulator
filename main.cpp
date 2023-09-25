@@ -14,5 +14,7 @@ int main(){
     printf("Arrow sim w/quat [sec]: %f\n",duration.count());
     cout << "program Ended" << endl;
     return 0;
+
+    // party time woot woot
 }
 
