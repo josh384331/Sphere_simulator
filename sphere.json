@@ -2,19 +2,18 @@
     "simulation" : {
         "time_step[s]" : 0.005
     },
-    "reference" : {
-        "area[ft^2]" : 0.000218,
-        "length[ft]" : 2.3
+    "geometry" : {
+        "radius[in]" : 0.5,
+        "density[slug/ft^3]" : 21.98
     },
     "initial" : {
         "airspeed[ft/s]" : 210.0,
         "altitude[ft]" : 5.0,
-        "elevation_angle[deg]" : 5.0
-    },
-    "mass" : {
-        "weight[lbf]" : 0.0697,
-        "Ixx[slug*ft^2]" : 0.0000194,
-        "Iyy[slug*ft^2]" : 0.00097
+        "elevation_angle[deg]" : 5.0,
+        "initial_p" : 0.0,
+        "initial_q" : 0.0,
+        "initial_r" : 0.0
+    }
     },
     "aerodynamics" : {
         "CL,a" : 4.929,

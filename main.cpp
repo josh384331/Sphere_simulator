@@ -1,4 +1,4 @@
-#include "arrow.h"
+#include "sphere.h"
 #include <chrono>
 
 int main(){
@@ -6,9 +6,9 @@ int main(){
     auto start_time = chrono::high_resolution_clock::now();
     auto end_time = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end_time - start_time;
-    arrow myArrow("sphere.json");
+    sphere myArrow("sphere.json");
     start_time = chrono::high_resolution_clock::now();
-    myArrow.exercise_3_9();
+    myArrow.run_simulation();
     end_time = chrono::high_resolution_clock::now();
     duration = end_time - start_time;
     printf("Arrow sim w/quat [sec]: %f\n",duration.count());

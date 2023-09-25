@@ -4,14 +4,10 @@
 sphere::sphere(string filename){
     std::ifstream f(filename);
     json data = json::parse(f);
-    double airspeed,altitude,elevation_angle,temp[3];
+    double airspeed,altitude,elevation_angle,temp[3],mass;
 
     // simulation data
     m_time_step = data["simulation"]["time_step[s]"];
-
-    // reference info
-    m_Sref = data["reference"]["area[ft^2]"];
-    m_lref = data["reference"]["length[ft]"];
 
     // initial state
     airspeed = data["initial"]["airspeed[ft/s]"];
@@ -25,30 +21,25 @@ sphere::sphere(string filename){
     m_state[0] = airspeed;
     m_state[1] = 0;
     m_state[2] = 0;
-    m_state[3] = 0;
-    m_state[4] = 0;
-    m_state[5] = 0;
+    m_state[3] = data["initial"]["initial_p"];
+    m_state[4] = data["initial"]["initial_q"];
+    m_state[5] = data["initial"]["initial_r"];
     m_state[6] = 0;
     m_state[7] = 0;
     m_state[8] = -altitude;
     euler_to_quat(temp,&m_state[9]);
 
     //mass props
-    m_W = data["mass"]["weight[lbf]"];
-    m_Ixx = data["mass"]["Ixx[slug*ft^2]"];
-    m_Iyy = data["mass"]["Iyy[slug*ft^2]"];
-    m_Izz = m_Iyy;
+    
+    m_rho_sphere = data["geometry"]["density[slug/ft^3]"];
+    m_r = data["geometry"]["radius[in]"];
+    m_r /= 12;
+    m_mass = 4/3*pi*m_r*m_r*m_r*m_rho_sphere;
+    m_Ixx = 0.4*m_mass*m_r*m_r;
+    m_Iyy = m_Ixx;
+    m_Izz = m_Ixx;
 
-    //aerodynamic properties
-    m_CLalpha = data["aerodynamics"]["CL,a"];
-    m_CLbeta = m_CLalpha;
-    m_CD0 = data["aerodynamics"]["CD0"];
-    m_CD2 = data["aerodynamics"]["CD2"];
-    m_Cmalpha = data["aerodynamics"]["Cm,a"];
-    m_Cmq = data["aerodynamics"]["Cm,q"];
-    m_Clp = data["aerodynamics"]["Cl,p"];
-    m_Cl0 = data["aerodynamics"]["Cl0"];
-
+    
 
     
 }
@@ -149,9 +140,9 @@ void sphere::get_state_array_delta(double* y0,double* ans){
     ans[1] = g * Fy / m_W + g * 2. * (ey*ez + ex*e0) + (p * w - r * u);
     ans[2] = g * Fz / m_W + g * (ez*ez + e0*e0 - ex*ex - ey*ey) + (q * u - p * v);
     // p q r dots
-    ans[3] = (Mx + (m_Iyy - m_Izz) * q * r) / m_Ixx;
-    ans[4] = (My + (m_Izz - m_Ixx) * p * r) / m_Iyy;
-    ans[5] = (Mz + (m_Ixx - m_Iyy) * p * q) / m_Izz;
+    ans[3] = Mx / m_Ixx;
+    ans[4] = My  / m_Iyy;
+    ans[5] = Mz  / m_Izz;
     // xf yf zf dots
     // get temps 
     temp1[0] = 0;
