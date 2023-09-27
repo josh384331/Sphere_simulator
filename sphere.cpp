@@ -63,7 +63,7 @@ void sphere::aerodynamics(double* y0,double* ans){
     double ez = y0[12];
 
     // init variables
-    double V,CL,CS,CD,Cl,Cm,Cn,alpha,beta,Fx,Fy,Fz,Mx,My,Mz;
+    double V,CL,CS,CD,Cl,Cm,Cn,alpha,beta,Fx,Fy,Fz,Mx,My,Mz,coef1,Fx_spin,Fy_spin,Fz_spin;
     // get atmospheric properties
     Atmosphere atm;
     get_atmospheric_properties_english(-zf,atm);
@@ -75,13 +75,11 @@ void sphere::aerodynamics(double* y0,double* ans){
     // get total velocity 
     V = sqrt(u * u + v * v + w * w);
 
-    // get aerodynamic coefficients
-    CL = m_CLalpha * alpha;
-    CS = m_CLbeta * beta;
-    CD = m_CD0 + m_CD2 * CL * CL;
-    Cl = m_Cl0 + m_Clp * m_lref * p / V;
-    Cm = m_Cmalpha * alpha + m_Cmq * m_lref * q / V;
-    Cn = - m_Cmalpha * beta + m_Cmq * m_lref * r / V;
+    // get forces and moments from rotation
+    coef1 = 16/3 * pi*pi * m_r*m_r*m_r *atm.density;
+    Fx_spin = coef1 * (q*w - r*v);
+    Fy_spin = coef1 * (r*u - p*w);
+    Fz_spin = coef1 * (p*v - q*u);
 
     // get forces and moments 
     Fx = -0.5 * atm.density * V * V * m_Sref * CD;
