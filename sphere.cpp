@@ -81,6 +81,20 @@ void sphere::aerodynamics(double* y0,double* ans){
     Fy_spin = coef1 * (r*u - p*w);
     Fz_spin = coef1 * (p*v - q*u);
 
+    double CD;
+
+    // CD for a sphere
+    if (RE>0.0 && RE <=450000) {
+        CD = 24.0/RE + 6/(1+sqrt(RE) + 0.4)
+    } else if (RE>450000 && RE <=560000) {
+        CD = 1.0*(pow(10.0,29.0))*pow(RE,-5.211)
+    } else if (RE>560000 && RE <=14000000) {
+        CD = -2.0*(pow(10.0,-23.0))*RE*RE*RE - 1.0*(pow(10.0,-16.0))*RE*RE + 9.0*(pow(10.0,-9.0))*RE + 0.069
+    } else {
+        CD = 0.12
+    }
+
+
     // get forces and moments 
     Fx = -0.5 * atm.density * V * V * m_Sref * CD;
     Fy = -0.5 * atm.density * V * V * m_Sref * CS;
