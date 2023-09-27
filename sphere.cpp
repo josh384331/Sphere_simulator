@@ -38,10 +38,10 @@ sphere::sphere(string filename){
     m_Ixx = 0.4*m_mass*m_r*m_r;
     m_Iyy = m_Ixx;
     m_Izz = m_Ixx;
+    m_Sref = 2.0 *pi * m_r*m_r;
+    m_lref = 2. * m_r;
 
-    
 
-    
 }
 
 
@@ -63,28 +63,30 @@ void sphere::aerodynamics(double* y0,double* ans){
     double ez = y0[12];
 
     // init variables
-    double V,CL,CS,CD,Cl,Cm,Cn,alpha,beta,Fx,Fy,Fz,Mx,My,Mz,coef1,Fx_spin,Fy_spin,Fz_spin;
+    double V,CL,CS,CD,Cl,Cm,Cn,alpha,beta,Fx,Fy,Fz,Mx,My,Mz,Fx_spin,Fy_spin,Fz_spin;
+    double salpha,sbeta,calpha,cbeta,coef1,coef2;
+    double RE;
+    double mu;
+    double g;
+
+
     // get atmospheric properties
     Atmosphere atm;
     get_atmospheric_properties_english(-zf,atm);
 
-    // get alpha and beta
-    alpha = atan2(w,u);
-    beta = atan2(v,u);
-
     // get total velocity 
     V = sqrt(u * u + v * v + w * w);
 
+    // get alpha and beta
+    alpha = atan2(w,u);
+    beta = atan2(v,V);
+
     // get forces and moments from rotation
-    coef1 = 16/3 * pi*pi * m_r*m_r*m_r *atm.density;
+    coef2 = 0.15;
+    coef1 = 16/3* coef2 * pi*pi * m_r*m_r*m_r *atm.density;
     Fx_spin = coef1 * (q*w - r*v);
     Fy_spin = coef1 * (r*u - p*w);
     Fz_spin = coef1 * (p*v - q*u);
-
-    double RE;
-    double mu;
-    double VT; // terminal velocity of the sphere in the liquid
-    double g;
 
      // get gravity for current state
     g = gravity_english(-zf);
@@ -105,15 +107,22 @@ void sphere::aerodynamics(double* y0,double* ans){
     } else {
         CD = 0.12;
     }
-
+    // precompute sin and cos for alpha and beta
+    calpha = cos(alpha);
+    cbeta = cos(beta);
+    salpha = sin(alpha);
+    sbeta = sin(beta);
 
     // get forces and moments 
-    Fx = -0.5 * atm.density * V * V * m_Sref * CD;
-    Fy = -0.5 * atm.density * V * V * m_Sref * CS;
-    Fz = -0.5 * atm.density * V * V * m_Sref * CL;
-    Mx =  0.5 * atm.density * V * V * m_Sref * m_lref * Cl;
-    My =  0.5 * atm.density * V * V * m_Sref * m_lref * Cm;
-    Mz =  0.5 * atm.density * V * V * m_Sref * m_lref * Cn;
+    Fx = -0.5 * atm.density * V * V * m_Sref * CD * calpha * cbeta;
+    Fy = -0.5 * atm.density * V * V * m_Sref * CD * sbeta;
+    Fz = -0.5 * atm.density * V * V * m_Sref * CD * salpha * cbeta;
+    Mx = 0;
+    My = 0;
+    Mz = 0;
+    // Mx =  0.5 * atm.density * V * V * m_Sref * m_lref * Cl;
+    // My =  0.5 * atm.density * V * V * m_Sref * m_lref * Cm;
+    // Mz =  0.5 * atm.density * V * V * m_Sref * m_lref * Cn;
 
     // set outputs
     ans[0] = Fx;
@@ -139,7 +148,6 @@ void sphere::get_state_array_delta(double* y0,double* ans){
     double ex = y0[10];
     double ey = y0[11];
     double ez = y0[12];
-
     // declare local variables
     double FM[6];
     double g,Fx,Fy,Fz,Mx,My,Mz;
@@ -198,15 +206,22 @@ void sphere::get_state_array_delta(double* y0,double* ans){
 void sphere::run_simulation(){
     double t=0;
     int i=0;
-    ifstream f("arrow_out.txt");
+    // check to see if file is already open
+    const char * file_name = "Sphere_out.txt";
+    ifstream f(file_name);
     if (!f.is_open()) {
-        cerr << "Error opening file: arrow_out.txt" << endl;
-}
-    FILE* arrow_out = fopen("Arrow_out.txt","w");
-    fprintf(arrow_out,"Time[s],u[ft/s],v[ft/s],w[ft/s],p[rad/s],q[rad/s],r[rad/s],x[ft],y[ft],z[ft],e0[rad],ex[rad],ey[rad],ez[rad]\n");
+        cerr << "Error opening file:" << file_name << endl;
+    }
+    // open file 
+    FILE* sphere_out = fopen(file_name,"w");
+    fprintf(sphere_out,"Time[s],u[ft/s],v[ft/s],w[ft/s],p[rad/s],q[rad/s],r[rad/s],x[ft],y[ft],z[ft],e0[rad],ex[rad],ey[rad],ez[rad]\n");
+   
+
     quat_norm(&m_state[9]);
+    
+    // start simulation
     do{
-        fprintf(arrow_out,"%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e\n",t,m_state[0],m_state[1],m_state[2],m_state[3],m_state[4],m_state[5],m_state[6],m_state[7],m_state[8],m_state[9],m_state[10],m_state[11],m_state[12]);
+        fprintf(sphere_out,"%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e\n",t,m_state[0],m_state[1],m_state[2],m_state[3],m_state[4],m_state[5],m_state[6],m_state[7],m_state[8],m_state[9],m_state[10],m_state[11],m_state[12]);
         this->rk4();
         if (i>m_i_max){
             cout << "Simulation Stoped at Max Iteration Count:" << i <<endl;
@@ -216,9 +231,9 @@ void sphere::run_simulation(){
         t += m_time_step;
         i++;
     }while(m_state[8]<=0);
-    fprintf(arrow_out,"%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e\n",t,m_state[0],m_state[1],m_state[2],m_state[3],m_state[4],m_state[5],m_state[6],m_state[7],m_state[8],m_state[9],m_state[10],m_state[11],m_state[12]);
+    fprintf(sphere_out,"%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e,%20.12e\n",t,m_state[0],m_state[1],m_state[2],m_state[3],m_state[4],m_state[5],m_state[6],m_state[7],m_state[8],m_state[9],m_state[10],m_state[11],m_state[12]);
 
-    fclose(arrow_out);
+    fclose(sphere_out);
 }
 
 void sphere::rk4(){

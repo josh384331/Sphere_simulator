@@ -48,7 +48,7 @@ void get_atmospheric_properties_si(double altitude, Atmosphere&atm)
     // find speed of sound
     a = sqrt(atm.gamma * atm.R * T);
  
- 
+    // find viscocity
     double T0 = 273.15; // Kelvin
     double mu0 = 0.00001716; //kg.m-s
     double C = 110.4; // Southerland constant
