@@ -19,6 +19,7 @@ struct Atmosphere
     double pressure;
     double density;
     double speed_of_sound;
+    double viscosity;
 
 };
 

@@ -93,7 +93,7 @@ void sphere::aerodynamics(double* y0,double* ans){
     //mu = ((m_rho_sphere-atm.density)/VT)*(2.0/9.0)*g*m_r*m_r;
 
     // Calculate the reynolds number
-    RE = atm.density*V*2.0*m_r/mu;
+    RE = atm.density*V*2.0*m_r/atm.viscosity;
 
     // Calculate CD for a sphere
     if (RE>0.0 && RE <=450000) {

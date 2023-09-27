@@ -5,7 +5,7 @@ void get_atmospheric_properties_si(double altitude, Atmosphere&atm)
     // variables
     int i;
     bool check=false;
-    double Z,T,temp,rho,a;
+    double Z,T,temp,rho,a,mu;
     double p=101325;
     double geopotential_altitude;
     double Zi[9] = {0,11000,20000,32000,47000,52000,61000,79000,90000};
@@ -47,6 +47,12 @@ void get_atmospheric_properties_si(double altitude, Atmosphere&atm)
     
     // find speed of sound
     a = sqrt(atm.gamma * atm.R * T);
+ 
+ 
+    double T0 = 273.15; // Kelvin
+    double mu0 = 0.00001716; //kg.m-s
+    double C = 110.4; // Southerland constant
+    mu = mu0*(T0+C)/(T+C)*pow(T/T0,1.5); 
 
     // save answer
     atm.geopotential_altitude = Z;
@@ -54,6 +60,7 @@ void get_atmospheric_properties_si(double altitude, Atmosphere&atm)
     atm.pressure = p;
     atm.density = rho;
     atm.speed_of_sound = a;
+    atm.viscosity = mu;
     
 
 }
@@ -71,6 +78,7 @@ void get_atmospheric_properties_english(double altitude, Atmosphere& atm){
     atm.pressure *= 0.020885434304801722; // from email
     atm.density *= 0.00194032032363104; // from email
     atm.speed_of_sound /= 0.3048; // from https://www.grc.nasa.gov/www/winddocs/cff/factors.html
+    atm.viscosity /= 47.88025898; // slugs/(ft-s) from Dynamic Viscosity https://www.cfd-online.com/Wiki/Sutherland%27s_law
 }
 
 void print_atmosphere()
