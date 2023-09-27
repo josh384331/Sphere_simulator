@@ -82,6 +82,11 @@ void sphere::aerodynamics(double* y0,double* ans){
     Fz_spin = coef1 * (p*v - q*u);
 
     double CD;
+    double RE;
+    double mu;
+    mu = 
+
+    RE = atm.density*V*2.0*m_r/mu
 
     // CD for a sphere
     if (RE>0.0 && RE <=450000) {
