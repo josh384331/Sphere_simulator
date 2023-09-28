@@ -3,13 +3,13 @@
         "time_step[s]" : 0.005
     },
     "geometry" : {
-        "radius[in]" : 0.5,
+        "radius[in]" : 0.25,
         "density[slug/ft^3]" : 21.98
     },
     "initial" : {
-        "airspeed[ft/s]" : 210.0,
-        "altitude[ft]" : 5.0,
-        "elevation_angle[deg]" : 5.0,
+        "airspeed[ft/s]" : 0,
+        "altitude[ft]" : 2000,
+        "elevation_angle[deg]" : 0.0,
         "initial_p" : 0.0,
         "initial_q" : 0.0,
         "initial_r" : 0.0

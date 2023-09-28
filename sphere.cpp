@@ -99,7 +99,7 @@ void sphere::aerodynamics(double* y0,double* ans){
 
     // Calculate CD for a sphere
     if (RE>0.0 && RE <=450000) {
-        CD = 24.0/RE + 6/(1+sqrt(RE) + 0.4);
+        CD = 24.0/RE + 6/(1+sqrt(RE)) + 0.4;
     } else if (RE>450000 && RE <=560000) {
         CD = 1.0*(pow(10.0,29.0))*pow(RE,-5.211);
     } else if (RE>560000 && RE <=14000000) {
@@ -107,6 +107,8 @@ void sphere::aerodynamics(double* y0,double* ans){
     } else {
         CD = 0.12;
     }
+
+
     // precompute sin and cos for alpha and beta
     calpha = cos(alpha);
     cbeta = cos(beta);
@@ -157,7 +159,7 @@ void sphere::get_state_array_delta(double* y0,double* ans){
     // get gravity and weight for current state
     g = gravity_english(-zf);
     m_W = g * m_mass;
-    
+
     // get psudo aerodynamic forces for current states
     this->aerodynamics(y0,FM);
     
@@ -207,6 +209,7 @@ void sphere::get_state_array_delta(double* y0,double* ans){
 void sphere::run_simulation(){
     double t=0;
     int i=0;
+
     // check to see if file is already open
     const char * file_name = "Sphere_out.txt";
     ifstream f(file_name);

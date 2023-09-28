@@ -11,7 +11,7 @@ public:
 
 private:
     double m_state[13];
-    int m_i_max=100000;
+    int m_i_max=1000000;
     double m_time_step,m_rho_sphere,m_mass,m_r,m_W,m_Ixx,m_Iyy,m_Izz,m_Sref,m_lref;
     int m_counter=0;
 
