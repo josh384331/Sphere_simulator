@@ -154,12 +154,13 @@ void sphere::get_state_array_delta(double* y0,double* ans){
     double temp1[4], temp2[4],temp3[4];
     
 
-    // get gravity for current state
+    // get gravity and weight for current state
     g = gravity_english(-zf);
-    
+    m_W = g * m_mass;
     
     // get psudo aerodynamic forces for current states
     this->aerodynamics(y0,FM);
+    
     Fx = FM[0];
     Fy = FM[1];
     Fz = FM[2];
