@@ -116,9 +116,9 @@ void sphere::aerodynamics(double* y0,double* ans){
     sbeta = sin(beta);
 
     // get forces and moments 
-    Fx = -0.5 * atm.density * V * V * m_Sref * CD * calpha * cbeta;
-    Fy = -0.5 * atm.density * V * V * m_Sref * CD * sbeta;
-    Fz = -0.5 * atm.density * V * V * m_Sref * CD * salpha * cbeta;
+    Fx = -0.5 * atm.density * V * V * m_Sref * CD * calpha * cbeta + Fx_spin;
+    Fy = -0.5 * atm.density * V * V * m_Sref * CD * sbeta + Fy_spin;
+    Fz = -0.5 * atm.density * V * V * m_Sref * CD * salpha * cbeta + Fz_spin;
     Mx = 0;
     My = 0;
     Mz = 0;

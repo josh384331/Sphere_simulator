@@ -7,11 +7,11 @@
         "density[slug/ft^3]" : 21.98
     },
     "initial" : {
-        "airspeed[ft/s]" : 0,
-        "altitude[ft]" : 2000,
+        "airspeed[ft/s]" : 1331,
+        "altitude[ft]" : 5.5,
         "elevation_angle[deg]" : 0.0,
         "initial_p" : 0.0,
-        "initial_q" : 0.0,
+        "initial_q" : 300.0,
         "initial_r" : 0.0
     }
     }
